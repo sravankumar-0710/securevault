@@ -1,0 +1,31 @@
+# ================================================================
+#  SecureVault — BACKEND requirements
+#  Install with CMD inside the backend/ folder:
+#
+#      pip install -r requirements_backend.txt
+#
+# ================================================================
+
+# Web framework
+Flask==3.1.2
+flask-cors==4.0.2
+flask-sock==0.7.0
+
+# Encryption (AES-256-GCM, Fernet, PBKDF2)
+cryptography==44.0.3
+
+# Air Gesture auth — MediaPipe hand tracking
+mediapipe==0.10.21
+
+# Image processing (used by MediaPipe)
+opencv-python==4.10.0.84
+
+# Array math (used by MediaPipe + gesture processing)
+numpy==1.26.4
+
+# ----------------------------------------------------------------
+# NOTE: All other modules used in the project are Python built-ins
+# and do NOT need to be installed:
+#   os, json, hashlib, hmac, secrets, uuid, base64,
+#   ctypes, ssl, math, statistics, threading, time, io
+# ----------------------------------------------------------------

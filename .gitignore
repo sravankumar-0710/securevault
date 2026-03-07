@@ -1,0 +1,9 @@
+node_modules/
+__pycache__/
+*.pyc
+.env
+backend/users/
+backend/static/images/
+backend/security/audit.log
+dist/
+.vite/

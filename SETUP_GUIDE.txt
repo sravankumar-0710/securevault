@@ -1,0 +1,118 @@
+================================================================
+  SecureVault — Complete Setup Guide
+================================================================
+
+
+────────────────────────────────────────────────────────────────
+  STEP 0 — Install these applications first (if not already)
+────────────────────────────────────────────────────────────────
+
+  Python 3.11+
+    Download: https://www.python.org/downloads/
+    During install: tick "Add Python to PATH"
+    Verify: python --version
+
+  Node.js 18+ (LTS)
+    Download: https://nodejs.org/
+    Verify: node --version
+
+  mkcert  (for HTTPS — one-time setup)
+    Download: https://github.com/FiloSottile/mkcert/releases
+    Get: mkcert-v1.4.4-windows-amd64.exe
+    Rename to: mkcert.exe
+    Move to: C:\Windows\System32\
+
+
+────────────────────────────────────────────────────────────────
+  STEP 1 — Install SSL certificates  (CMD — run once ever)
+────────────────────────────────────────────────────────────────
+
+  mkcert -install
+
+  Then cd into your backend folder and run:
+
+  mkcert localhost 127.0.0.1
+
+  This creates two files:
+    localhost+1.pem         (certificate)
+    localhost+1-key.pem     (private key)
+  Leave them inside the backend/ folder.
+
+
+────────────────────────────────────────────────────────────────
+  STEP 2 — Set up the pepper secret  (one-time, important)
+────────────────────────────────────────────────────────────────
+
+  Create a file called .env inside the backend/ folder.
+  Open it in Notepad and paste one line:
+
+    SV_PEPPER=paste_a_long_random_string_here
+
+  Generate a good random pepper with:
+    python -c "import secrets; print(secrets.token_hex(48))"
+
+  IMPORTANT: Never change this value after creating users.
+  Never commit it to GitHub.
+
+
+────────────────────────────────────────────────────────────────
+  STEP 3 — Backend  (CMD inside backend/ folder)
+────────────────────────────────────────────────────────────────
+
+  cd backend
+  pip install -r requirements_backend.txt
+
+
+────────────────────────────────────────────────────────────────
+  STEP 4 — Frontend  (CMD inside frontend/ folder)
+────────────────────────────────────────────────────────────────
+
+  cd frontend
+  npm install
+
+
+────────────────────────────────────────────────────────────────
+  STEP 5 — Run the project  (2 separate CMD windows)
+────────────────────────────────────────────────────────────────
+
+  CMD Window 1 — Backend:
+    cd backend
+    python start.py
+
+  CMD Window 2 — Frontend:
+    cd frontend
+    npm run dev
+
+  Open browser at:  https://localhost:5173
+
+
+────────────────────────────────────────────────────────────────
+  WHAT EACH PACKAGE DOES
+────────────────────────────────────────────────────────────────
+
+  BACKEND (pip)
+  ┌─────────────────────┬──────────────────────────────────────┐
+  │ Flask               │ Web server — handles all API routes  │
+  │ flask-cors          │ Allows frontend to call the backend  │
+  │ flask-sock          │ WebSocket support for air gesture    │
+  │ cryptography        │ AES-256-GCM encryption + Fernet      │
+  │ mediapipe           │ Hand landmark detection (ML model)   │
+  │ opencv-python       │ Camera frame decoding for MediaPipe  │
+  │ numpy               │ Fast array math for gesture matching │
+  └─────────────────────┴──────────────────────────────────────┘
+
+  FRONTEND (npm)
+  ┌─────────────────────┬──────────────────────────────────────┐
+  │ react               │ UI component framework               │
+  │ react-dom           │ Renders React into the browser       │
+  │ vite                │ Dev server + production build tool   │
+  │ @vitejs/plugin-react│ Lets Vite understand JSX files       │
+  └─────────────────────┴──────────────────────────────────────┘
+
+  BUILT-IN (nothing to install)
+    Python: os, json, hashlib, hmac, secrets, uuid,
+            base64, ctypes, ssl, math, statistics,
+            threading, time, io, random
+
+
+================================================================

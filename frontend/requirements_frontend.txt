@@ -1,0 +1,28 @@
+# ================================================================
+#  SecureVault — FRONTEND requirements
+#  These are npm packages, NOT pip packages.
+#
+#  Install with CMD inside the frontend/ folder:
+#
+#      npm install
+#
+#  (This reads package.json automatically — no extra steps needed)
+# ================================================================
+
+
+# ── If you need to install manually one by one: ──────────────
+
+# React — UI library
+#   npm install react@18.3.1
+#   npm install react-dom@18.3.1
+
+# Vite — dev server + build tool  (dev dependency)
+#   npm install --save-dev vite@6.3.5
+#   npm install --save-dev @vitejs/plugin-react@4.3.4
+
+
+# ----------------------------------------------------------------
+# That's it. SecureVault frontend uses zero third-party UI
+# libraries — all components are custom-built with plain CSS.
+# No Tailwind, no MUI, no component frameworks needed.
+# ----------------------------------------------------------------
