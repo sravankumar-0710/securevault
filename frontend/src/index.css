@@ -2,18 +2,18 @@
 
 /* ─────────────────────────────────────────────────────────
    SECUREVAULT · Design System
-   Theme: Premium Dark Slate + Violet
-   Palette: Deep slate + medium violet + soft white
+   Theme: Ruby Crimson
+   Palette: Deep charcoal + ruby red + warm white
 ───────────────────────────────────────────────────────── */
 
 :root {
   /* Core palette — dark slate */
-  --obsidian:   #0d0e14;
-  --obsidian2:  #12131a;
-  --obsidian3:  #161720;
-  --panel:      #1a1b27;
-  --panel2:     #202130;
-  --panel3:     #26273a;
+  --obsidian:   #0e0a0a;
+  --obsidian2:  #150e0e;
+  --obsidian3:  #1a1010;
+  --panel:      #1f1212;
+  --panel2:     #261616;
+  --panel3:     #2e1a1a;
 
   /* Borders */
   --b1: rgba(255,255,255,0.07);
@@ -21,18 +21,18 @@
   --b3: rgba(255,255,255,0.025);
 
   /* Text — boosted contrast */
-  --t1: #f4f4ff;   /* near-white with cool tint — main text */
-  --t2: #a8a8c8;   /* secondary text — was too dark, now clearly readable */
-  --t3: #6868a0;   /* muted labels — lifted from near-invisible */
-  --t4: #2e2e52;   /* very subtle borders/dividers */
+  --t1: #fff1f1;   /* near-white with warm ruby tint — main text */
+  --t2: #c8a8a8;   /* secondary text — warm rose-grey */
+  --t3: #8a5858;   /* muted labels — warm muted rose */
+  --t4: #3a1e1e;   /* very subtle borders/dividers */
 
-  /* Accent: medium violet */
-  --green:       #a78bfa;
-  --green-mid:   #8b6ef5;
-  --green-deep:  #5b3fd4;
-  --green-glow:  rgba(167,139,250,0.20);
-  --green-dim:   rgba(167,139,250,0.10);
-  --green-dim2:  rgba(167,139,250,0.05);
+  /* Accent: ruby crimson */
+  --green:       #f43f5e;
+  --green-mid:   #e11d48;
+  --green-deep:  #9f1239;
+  --green-glow:  rgba(244,63,94,0.22);
+  --green-dim:   rgba(244,63,94,0.12);
+  --green-dim2:  rgba(244,63,94,0.06);
 
   /* Status */
   --red:         #f87171;
@@ -62,11 +62,11 @@
   --dur3:   0.4s;
 
   /* Shadows — violet-tinted */
-  --sh-sm:  0 2px 12px rgba(5,5,18,0.5);
-  --sh:     0 4px 24px rgba(5,5,18,0.6);
-  --sh-lg:  0 8px 48px rgba(5,5,18,0.75);
-  --sh-xl:  0 16px 80px rgba(5,5,18,0.85);
-  --sh-green: 0 0 32px rgba(167,139,250,0.18);
+  --sh-sm:  0 2px 12px rgba(18,4,4,0.55);
+  --sh:     0 4px 24px rgba(18,4,4,0.65);
+  --sh-lg:  0 8px 48px rgba(18,4,4,0.80);
+  --sh-xl:  0 16px 80px rgba(18,4,4,0.88);
+  --sh-green: 0 0 32px rgba(244,63,94,0.20);
   --sh-red:   0 0 32px rgba(248,113,113,0.15);
 }
 
@@ -98,7 +98,7 @@ body {
 
 /* ── Selection ──────────────────────────────────────────── */
 ::selection {
-  background: rgba(167,139,250,0.12);
+  background: rgba(244,63,94,0.12);
   color: var(--green);
 }
 
@@ -140,8 +140,8 @@ body {
   to   { opacity: 0; transform: translateX(110%) scale(0.9); }
 }
 @keyframes sv-pulse-border {
-  0%, 100% { border-color: rgba(139,110,245,0.25); box-shadow: 0 0 16px rgba(167,139,250,0.08); }
-  50%       { border-color: rgba(167,139,250,0.65); box-shadow: 0 0 28px rgba(167,139,250,0.22); }
+  0%, 100% { border-color: rgba(244,63,94,0.28); box-shadow: 0 0 16px rgba(244,63,94,0.10); }
+  50%       { border-color: rgba(244,63,94,0.70); box-shadow: 0 0 28px rgba(244,63,94,0.26); }
 }
 @keyframes sv-scan {
   0%   { top: -2px; }
@@ -247,7 +247,7 @@ body {
   z-index: 0;
   pointer-events: none;
   background-image:
-    radial-gradient(circle, rgba(167,139,250,0.07) 1px, transparent 1px);
+    radial-gradient(circle, rgba(244,63,94,0.08) 1px, transparent 1px);
   background-size: 32px 32px;
   mask-image: radial-gradient(ellipse 90% 90% at 50% 50%, black 20%, transparent 100%);
 }
@@ -256,7 +256,7 @@ body {
 .sv-bg-orb-1 {
   position: fixed; pointer-events: none; z-index: 0;
   top: -15%; left: 10%; width: 500px; height: 500px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(139,110,245,0.07) 0%, transparent 65%);
+  background: radial-gradient(circle, rgba(225,29,72,0.08) 0%, transparent 65%);
 }
 .sv-bg-orb-2 {
   position: fixed; pointer-events: none; z-index: 0;
@@ -283,7 +283,7 @@ body {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: linear-gradient(135deg, rgba(167,139,250,0.04) 0%, transparent 60%);
+  background: linear-gradient(135deg, rgba(244,63,94,0.05) 0%, transparent 60%);
   pointer-events: none;
 }
 
@@ -296,7 +296,7 @@ body {
   background: rgba(18, 19, 28, 0.80);
   backdrop-filter: blur(20px) saturate(160%);
   -webkit-backdrop-filter: blur(20px) saturate(160%);
-  border: 1px solid rgba(167,139,250,0.12);
+  border: 1px solid rgba(244,63,94,0.14);
   border-radius: var(--r-xl);
   box-shadow: var(--sh-lg),
               inset 0 1px 0 rgba(255,255,255,0.05);
@@ -309,7 +309,7 @@ body {
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(167,139,250,0.10), transparent);
+  background: linear-gradient(90deg, transparent, rgba(244,63,94,0.10), transparent);
   pointer-events: none;
 }
 
@@ -353,13 +353,13 @@ body {
 }
 
 .sv-input:hover:not(:focus) {
-  border-color: rgba(167,139,250,0.18);
+  border-color: rgba(244,63,94,0.20);
   background: rgba(18, 19, 28, 0.95);
 }
 
 .sv-input:focus {
-  border-color: rgba(167,139,250,0.55);
-  box-shadow: 0 0 0 3px var(--green-dim);
+  border-color: rgba(244,63,94,0.60);
+  box-shadow: 0 0 0 3px rgba(244,63,94,0.14);
   background: var(--obsidian2);
 }
 
@@ -450,11 +450,11 @@ body {
 .sv-btn-primary:hover {
   background: rgba(0,255,136,0.14);
   border-color: var(--green-mid);
-  box-shadow: 0 0 24px var(--green-glow), inset 0 1px 0 rgba(0,255,136,0.1);
+  box-shadow: 0 0 24px var(--green-glow), inset 0 1px 0 rgba(244,63,94,0.15);
   color: #fff;
 }
 .sv-btn-primary:focus-visible {
-  box-shadow: 0 0 0 3px var(--green-dim), 0 0 24px var(--green-glow);
+  box-shadow: 0 0 0 3px rgba(244,63,94,0.16), 0 0 24px var(--green-glow);
 }
 
 /* GHOST */
@@ -794,7 +794,7 @@ body {
   border-radius: 99px;
   background: linear-gradient(90deg, var(--green-mid), var(--green));
   transition: width 0.4s var(--ease);
-  box-shadow: 0 0 8px var(--green-glow);
+  box-shadow: 0 0 8px rgba(244,63,94,0.22);
 }
 .sv-progress-bar.red   { background: linear-gradient(90deg, #ff2244, var(--red)); }
 .sv-progress-bar.amber { background: linear-gradient(90deg, #e07000, var(--amber)); }
@@ -852,7 +852,7 @@ body {
 .sv-drop-overlay {
   position: fixed; inset: 0; z-index: 500;
   background: rgba(0,10,5,0.75);
-  border: 2px dashed rgba(167,139,250,0.45);
+  border: 2px dashed rgba(244,63,94,0.50);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1011,7 +1011,7 @@ input[type="checkbox"] {
 .sv-dot.filled {
   background: var(--green);
   border-color: var(--green);
-  box-shadow: 0 0 8px var(--green-glow);
+  box-shadow: 0 0 8px rgba(244,63,94,0.22);
   transform: scale(1.2);
 }
 
@@ -1066,7 +1066,7 @@ input[type="checkbox"] {
 
 .sv-method-card.active {
   background: var(--green-dim2);
-  border-color: rgba(139,110,245,0.4);
+  border-color: rgba(244,63,94,0.45);
   box-shadow: 0 0 16px var(--green-glow);
 }
 
@@ -1110,7 +1110,7 @@ input[type="checkbox"] {
 }
 
 .sv-alert-error  { background: var(--red-dim);   border-color: rgba(248,113,113,0.3); color: var(--red);   }
-.sv-alert-success{ background: var(--green-dim2); border-color: rgba(167,139,250,0.3); color: var(--green); }
+.sv-alert-success{ background: var(--green-dim2); border-color: rgba(244,63,94,0.30); color: var(--green); }
 .sv-alert-info   { background: var(--blue-dim);   border-color: rgba(68,136,255,0.2); color: var(--blue); }
 .sv-alert-amber  { background: var(--amber-dim);  border-color: rgba(255,170,0,0.2);  color: var(--amber);}
 
@@ -1188,7 +1188,7 @@ input[type="checkbox"] {
   font-size: 12px;
   outline: none;
   width: 180px;
-  box-shadow: 0 0 0 3px var(--green-dim);
+  box-shadow: 0 0 0 3px rgba(244,63,94,0.14);
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -1364,7 +1364,7 @@ button, label, a { touch-action: manipulation; }
 /* ── Logo icon pulse ────────────────────────────────────── */
 .sv-logo-icon {
   animation: sv-pulse-border 4s ease infinite;
-  box-shadow: 0 0 20px rgba(167,139,250,0.15);
+  box-shadow: 0 0 20px rgba(244,63,94,0.18);
   transition: box-shadow var(--dur2);
 }
 .sv-logo-icon:hover {
@@ -1435,7 +1435,7 @@ input[type="checkbox"]:checked {
 
 /* ── Sort header active glow ─────────────────────────────── */
 .sv-table th.sort-active {
-  text-shadow: 0 0 12px rgba(167,139,250,0.4);
+  text-shadow: 0 0 12px rgba(244,63,94,0.45);
 }
 
 /* ── Scrollable table container ─────────────────────────── */
@@ -1459,7 +1459,7 @@ input[type="checkbox"]:checked {
 .sv-drop-overlay {
   animation: sv-fade-in 0.15s var(--ease);
   border-color: rgba(0,255,136,0.5);
-  box-shadow: inset 0 0 60px rgba(167,139,250,0.04);
+  box-shadow: inset 0 0 60px rgba(244,63,94,0.05);
 }
 
 /* ── Settings method card transition ───────────────────── */
@@ -1492,15 +1492,15 @@ input[type="checkbox"]:checked {
   transition: border-color var(--dur2), box-shadow var(--dur2);
 }
 .sv-danger-zone:hover {
-  border-color: rgba(248,113,113,0.28) !important;
-  box-shadow: 0 0 24px rgba(248,113,113,0.07);
+  border-color: rgba(244,63,94,0.35) !important;
+  box-shadow: 0 0 24px rgba(244,63,94,0.10);
 }
 
 /* ── Native select styling ───────────────────────────────── */
 select.sv-input {
   appearance: none;
   -webkit-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236868a0' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238a5858' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
   padding-right: 36px;
@@ -1513,6 +1513,6 @@ select.sv-input option {
 
 /* ── Setup method card hover ─────────────────────────────── */
 .sv-method-toggle:hover {
-  border-color: rgba(167,139,250,0.25) !important;
+  border-color: rgba(244,63,94,0.30) !important;
   background: var(--green-dim2) !important;
 }
