@@ -337,9 +337,29 @@ def upload_file():
     if "file" not in request.files:
         return jsonify({"error": "No file provided"}), 400
 
-    file   = request.files["file"]
-    folder = request.form.get("folder", "").strip("/")
-    VaultEngine(user_dir).add_file(master_key, file.filename, file.read(), folder)
+    file          = request.files["file"]
+    folder        = request.form.get("folder", "").strip("/")
+    relative_path = request.form.get("relative_path", "").strip("/")
+
+    engine = VaultEngine(user_dir)
+
+    # Auto-create every subfolder in the relative path so nested
+    # folder uploads land in the right place without the user having
+    # to create them first.
+    if relative_path:
+        parts        = relative_path.split("/")
+        accumulated  = folder.split("/") if folder else []
+        for part in parts:
+            if not part:
+                continue
+            accumulated.append(part)
+            subfolder_path = "/".join(accumulated)
+            try:
+                engine.create_folder(master_key, subfolder_path)
+            except Exception:
+                pass  # already exists — safe to ignore
+
+    engine.add_file(master_key, file.filename, file.read(), folder)
     log_event(session["username"], "UPLOAD", "SUCCESS")
     return jsonify({"message": "File uploaded successfully"})
 

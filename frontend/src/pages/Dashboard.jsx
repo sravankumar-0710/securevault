@@ -76,7 +76,8 @@ export default function Dashboard({ token, onLogout, onSettings }) {
   const [loading,        setLoading]        = useState(true);
   const [cursor,         setCursor]         = useState({ x:-999, y:-999, visible:false });
 
-  const fileInputRef = useRef(null);
+  const fileInputRef   = useRef(null);
+  const folderInputRef = useRef(null);
   const timerRef     = useRef(null);
   const lastActive   = useRef(Date.now());
   const loggedOut    = useRef(false);
@@ -241,22 +242,73 @@ export default function Dashboard({ token, onLogout, onSettings }) {
     if (dragCounter.current === 0) setDragging(false);
   };
   const handleDragOver = (e) => { e.preventDefault(); e.dataTransfer.dropEffect = "copy"; };
-  const handleDrop     = async (e) => {
+  const handleDrop = async (e) => {
     e.preventDefault();
     dragCounter.current = 0;
     setDragging(false);
-    const dropped = Array.from(e.dataTransfer.files);
-    if (dropped.length) await uploadFiles(dropped);
+
+    // Collect files — preserving webkitRelativePath when dragging a folder
+    const items = e.dataTransfer.items;
+    if (items && items.length && items[0].webkitGetAsEntry) {
+      const entries = Array.from(items).map(i => i.webkitGetAsEntry()).filter(Boolean);
+      const files = await readEntries(entries);
+      if (files.length) await uploadFiles(files);
+    } else {
+      const dropped = Array.from(e.dataTransfer.files);
+      if (dropped.length) await uploadFiles(dropped);
+    }
   };
 
+  // Recursively walk FileSystemEntry tree → flat [{file, relativePath}]
+  const readEntries = (entries) => new Promise((resolve) => {
+    const results = [];
+    let pending = 0;
+    const done = () => { if (--pending === 0) resolve(results); };
+    const walk = (entry, path) => {
+      pending++;
+      if (entry.isFile) {
+        entry.getFile(file => {
+          file._relativePath = path || file.name;
+          results.push(file);
+          done();
+        }, done);
+      } else if (entry.isDirectory) {
+        const reader = entry.createReader();
+        const readAll = (accumulated) => {
+          reader.readEntries(batch => {
+            if (!batch.length) {
+              accumulated.forEach(e => walk(e, `${path || entry.name}/${e.name}`));
+              done();
+            } else {
+              readAll([...accumulated, ...batch]);
+            }
+          }, done);
+        };
+        readAll([]);
+      } else done();
+    };
+    if (entries.length === 0) return resolve([]);
+    entries.forEach(e => walk(e, e.name));
+  });
+
   // ── Upload ────────────────────────────────────────────────
+  // Each file may have ._relativePath (set by folder picker or drag-drop dir walk)
   const uploadFiles = async (list) => {
     let done = 0;
     setUploadProgress(`0 / ${list.length}`);
     for (const file of list) {
       const form = new FormData();
       form.append("file", file);
-      if (currentFolder) form.append("folder", currentFolder);
+
+      // Determine target folder: combine currentFolder + any relative subfolder
+      const relPath   = file._relativePath || file.webkitRelativePath || "";
+      // relPath is like "FolderName/sub/file.txt" — strip the filename to get subdir
+      const relDir    = relPath.includes("/") ? relPath.split("/").slice(0, -1).join("/") : "";
+      const targetDir = [currentFolder, relDir].filter(Boolean).join("/");
+      if (targetDir) form.append("folder", targetDir);
+      // Also send the original relative path so backend can auto-create subfolders
+      if (relDir)    form.append("relative_path", relDir);
+
       try {
         const res = await fetch(`${API}/upload`, { method:"POST", headers:authHdr(), body:form });
         if (chk401(res)) return;
@@ -273,8 +325,16 @@ export default function Dashboard({ token, onLogout, onSettings }) {
   const handleUpload = async (e) => {
     const list = Array.from(e.target.files);
     if (!list.length) return;
+    // webkitRelativePath is set automatically when webkitdirectory is used
     await uploadFiles(list);
     fileInputRef.current.value = "";
+  };
+
+  const handleFolderUpload = async (e) => {
+    const list = Array.from(e.target.files);
+    if (!list.length) return;
+    await uploadFiles(list);
+    folderInputRef.current.value = "";
   };
 
   // ── Download ──────────────────────────────────────────────
@@ -588,9 +648,21 @@ export default function Dashboard({ token, onLogout, onSettings }) {
                   disabled={navIndex >= navHistory.length - 1}
                   style={{ opacity:navIndex >= navHistory.length - 1 ? 0.3 : 1, padding:"5px 10px" }}>›</button>
 
-                <label className="sv-btn sv-btn-primary sv-btn-sm" style={{ cursor:"pointer" }} title="Or drag & drop anywhere">
-                  ⬆ Upload
+                <label className="sv-btn sv-btn-primary sv-btn-sm" style={{ cursor:"pointer" }} title="Upload files (or drag & drop anywhere)">
+                  ⬆ Upload Files
                   <input type="file" multiple ref={fileInputRef} onChange={handleUpload} style={{ display:"none" }} />
+                </label>
+
+                <label className="sv-btn sv-btn-ghost sv-btn-sm" style={{ cursor:"pointer" }} title="Upload an entire folder — all subfolders preserved">
+                  📁 Upload Folder
+                  <input
+                    type="file"
+                    ref={folderInputRef}
+                    onChange={handleFolderUpload}
+                    style={{ display:"none" }}
+                    webkitdirectory=""
+                    directory=""
+                  />
                 </label>
 
                 {/* Inline folder creation */}
