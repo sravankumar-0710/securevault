@@ -114,8 +114,27 @@ export default function Login({ onSuccess, onGoSetup, logoutMessage }) {
   const ksOk    = ksCount >= 4;
   const mouseOk = points.length > 10;
 
+
+  // ── Cursor light ──────────────────────────────────────────
+  const [cursorPos, setCursorPos] = useState({ x: -999, y: -999, on: false });
+  useEffect(() => {
+    const move  = e => setCursorPos({ x: e.clientX, y: e.clientY, on: true });
+    const leave = () => setCursorPos(c => ({ ...c, on: false }));
+    window.addEventListener("mousemove", move);
+    window.addEventListener("mouseleave", leave);
+    return () => { window.removeEventListener("mousemove", move); window.removeEventListener("mouseleave", leave); };
+  }, []);
   return (
     <div className="sv-page-center">
+      {/* Cursor light */}
+      <div style={{
+        position:"fixed",pointerEvents:"none",zIndex:9999,
+        left:cursorPos.x,top:cursorPos.y,
+        width:280,height:280,transform:"translate(-50%,-50%)",
+        background:"radial-gradient(circle,rgba(167,139,250,0.11) 0%,rgba(139,110,245,0.04) 45%,transparent 70%)",
+        borderRadius:"50%",mixBlendMode:"screen",
+        opacity:cursorPos.on?1:0,transition:"opacity 0.35s ease",
+      }} />
       <div className="sv-bg-grid" />
       <div className="sv-bg-orb-1" />
       <div className="sv-bg-orb-2" />

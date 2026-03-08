@@ -1,10 +1,8 @@
-import React from "react";
 import { useState } from "react";
 import Login    from "./pages/Login";
 import Setup    from "./pages/Setup";
 import Dashboard from "./pages/Dashboard";
 import Settings  from "./pages/Settings";
-
 
 export default function App() {
   const [page,          setPage]          = useState("login");
@@ -33,7 +31,10 @@ export default function App() {
         />
       )}
       {page === "setup" && (
-        <Setup onSuccess={() => setPage("login")} />
+        <Setup
+          onSuccess={() => setPage("login")}
+          onGoLogin={() => { setLogoutMessage(""); setPage("login"); }}
+        />
       )}
       {page === "dashboard" && (
         <Dashboard

@@ -20,11 +20,11 @@
   --b2: rgba(255,255,255,0.045);
   --b3: rgba(255,255,255,0.025);
 
-  /* Text */
-  --t1: #eeeef5;
-  --t2: #8888a8;
-  --t3: #44445a;
-  --t4: #22223a;
+  /* Text — boosted contrast */
+  --t1: #f4f4ff;   /* near-white with cool tint — main text */
+  --t2: #a8a8c8;   /* secondary text — was too dark, now clearly readable */
+  --t3: #6868a0;   /* muted labels — lifted from near-invisible */
+  --t4: #2e2e52;   /* very subtle borders/dividers */
 
   /* Accent: medium violet */
   --green:       #a78bfa;
@@ -79,11 +79,11 @@
 html { scroll-behavior: smooth; }
 
 body {
-  background: var(--obsidian);  /* #0d0e14 */
+  background: var(--obsidian);
   color: var(--t1);
   font-family: var(--font-mono);
-  font-size: 13px;
-  line-height: 1.6;
+  font-size: 14px;
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
@@ -140,8 +140,8 @@ body {
   to   { opacity: 0; transform: translateX(110%) scale(0.9); }
 }
 @keyframes sv-pulse-border {
-  0%, 100% { border-color: rgba(0,255,136,0.25); }
-  50%       { border-color: rgba(0,255,136,0.6); }
+  0%, 100% { border-color: rgba(139,110,245,0.25); box-shadow: 0 0 16px rgba(167,139,250,0.08); }
+  50%       { border-color: rgba(167,139,250,0.65); box-shadow: 0 0 28px rgba(167,139,250,0.22); }
 }
 @keyframes sv-scan {
   0%   { top: -2px; }
@@ -192,19 +192,19 @@ body {
 
 .sv-label {
   display: block;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--t3);
+  color: var(--t2);
   margin-bottom: 8px;
 }
 
 .sv-hint {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--t3);
   letter-spacing: 0.02em;
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -345,7 +345,7 @@ body {
   padding: 11px 14px;
   color: var(--t1);
   font-family: var(--font-mono);
-  font-size: 13px;
+  font-size: 14px;
   outline: none;
   transition: border-color var(--dur) var(--ease),
               box-shadow    var(--dur) var(--ease),
@@ -353,17 +353,17 @@ body {
 }
 
 .sv-input:hover:not(:focus) {
-  border-color: rgba(255,255,255,0.1);
-  background: rgba(12, 16, 24, 0.9);
+  border-color: rgba(167,139,250,0.18);
+  background: rgba(18, 19, 28, 0.95);
 }
 
 .sv-input:focus {
-  border-color: rgba(167,139,250,0.5);
+  border-color: rgba(167,139,250,0.55);
   box-shadow: 0 0 0 3px var(--green-dim);
   background: var(--obsidian2);
 }
 
-.sv-input::placeholder { color: var(--t4); }
+.sv-input::placeholder { color: var(--t3); font-size: 13px; }
 
 /* Autofill override */
 .sv-input:-webkit-autofill,
@@ -1109,8 +1109,8 @@ input[type="checkbox"] {
   border: 1px solid;
 }
 
-.sv-alert-error  { background: var(--red-dim);   border-color: rgba(255,68,102,0.2); color: var(--red);   }
-.sv-alert-success{ background: var(--green-dim2); border-color: var(--green-deep);   color: var(--green); }
+.sv-alert-error  { background: var(--red-dim);   border-color: rgba(248,113,113,0.3); color: var(--red);   }
+.sv-alert-success{ background: var(--green-dim2); border-color: rgba(167,139,250,0.3); color: var(--green); }
 .sv-alert-info   { background: var(--blue-dim);   border-color: rgba(68,136,255,0.2); color: var(--blue); }
 .sv-alert-amber  { background: var(--amber-dim);  border-color: rgba(255,170,0,0.2);  color: var(--amber);}
 
@@ -1492,6 +1492,27 @@ input[type="checkbox"]:checked {
   transition: border-color var(--dur2), box-shadow var(--dur2);
 }
 .sv-danger-zone:hover {
-  border-color: rgba(255,68,102,0.25) !important;
-  box-shadow: 0 0 24px rgba(255,68,102,0.06);
+  border-color: rgba(248,113,113,0.28) !important;
+  box-shadow: 0 0 24px rgba(248,113,113,0.07);
+}
+
+/* ── Native select styling ───────────────────────────────── */
+select.sv-input {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236868a0' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+  cursor: pointer;
+}
+select.sv-input option {
+  background: var(--panel2);
+  color: var(--t1);
+}
+
+/* ── Setup method card hover ─────────────────────────────── */
+.sv-method-toggle:hover {
+  border-color: rgba(167,139,250,0.25) !important;
+  background: var(--green-dim2) !important;
 }

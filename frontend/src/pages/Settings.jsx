@@ -150,7 +150,7 @@ export default function Settings({ token, onBack }) {
       <div key={method} className={`sv-card sv-settings-method${isOpen?" open":""}`}
         style={{ marginBottom:8, animationDelay:`${ordered.indexOf(method)*0.05}s` }}>
         <div style={{ padding:"16px 20px", display:"flex", alignItems:"center", gap:14, flexWrap:"wrap" }}>
-          <div style={{ width:42,height:42,borderRadius:10,flexShrink:0,background:active?"var(--green-dim)":"var(--obsidian2)",border:`1px solid ${active?"rgba(0,255,136,0.2)":"var(--b1)"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,transition:"all 0.3s var(--ease)",boxShadow:active?"0 0 16px var(--green-glow)":"none" }}>
+          <div style={{ width:42,height:42,borderRadius:10,flexShrink:0,background:active?"var(--green-dim)":"var(--obsidian2)",border:`1px solid ${active?"rgba(167,139,250,0.25)":"var(--b1)"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,transition:"all 0.3s var(--ease)",boxShadow:active?"0 0 16px var(--green-glow)":"none" }}>
             {info.icon}
           </div>
           <div style={{ flex:1,minWidth:0 }}>
@@ -252,7 +252,7 @@ export default function Settings({ token, onBack }) {
         <div className="sv-section-label" style={{ marginTop:28 }}>Active Sessions</div>
         <div className="sv-card sv-settings-method" style={{ marginBottom:8 }}>
           <div style={{ padding:"16px 20px",display:"flex",alignItems:"center",gap:14,flexWrap:"wrap" }}>
-            <div style={{ width:42,height:42,borderRadius:10,background:"var(--blue-dim)",border:"1px solid rgba(68,136,255,0.2)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0 }}>🖥</div>
+            <div style={{ width:42,height:42,borderRadius:10,background:"var(--blue-dim)",border:"1px solid rgba(96,165,250,0.25)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0 }}>🖥</div>
             <div style={{ flex:1 }}>
               <div style={{ fontFamily:"var(--font-display)",fontSize:14,fontWeight:600,color:"var(--t1)",marginBottom:3 }}>Device Sessions</div>
               <div style={{ fontSize:11,color:"var(--t3)" }}>View and revoke other active logins</div>
@@ -286,7 +286,7 @@ export default function Settings({ token, onBack }) {
         <div className="sv-section-label" style={{ marginTop:28,color:"var(--red)" }}>Danger Zone</div>
         <div className="sv-card sv-danger-zone" style={{ marginBottom:40 }}>
           <div style={{ padding:"16px 20px",display:"flex",alignItems:"center",gap:14,flexWrap:"wrap" }}>
-            <div style={{ width:42,height:42,borderRadius:10,background:"var(--red-dim)",border:"1px solid rgba(255,68,102,0.2)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0 }}>⚠</div>
+            <div style={{ width:42,height:42,borderRadius:10,background:"var(--red-dim)",border:"1px solid rgba(248,113,113,0.25)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0 }}>⚠</div>
             <div style={{ flex:1,minWidth:0 }}>
               <div style={{ fontFamily:"var(--font-display)",fontSize:14,fontWeight:600,color:"var(--red)",marginBottom:3 }}>Delete Account</div>
               <div style={{ fontSize:11,color:"var(--t3)" }}>Permanently delete your vault and all encrypted data. Cannot be undone.</div>
@@ -294,14 +294,14 @@ export default function Settings({ token, onBack }) {
             {!showDel&&<button className="sv-btn sv-btn-danger sv-btn-sm" onClick={()=>setShowDel(true)}>Delete Account</button>}
           </div>
           {showDel&&(
-            <div style={{ borderTop:"1px solid rgba(255,68,102,0.12)",padding:"22px 20px",animation:"sv-fade-up 0.2s var(--ease)" }}>
+            <div style={{ borderTop:"1px solid rgba(248,113,113,0.15)",padding:"22px 20px",animation:"sv-fade-up 0.2s var(--ease)" }}>
               <div style={{ marginBottom:12 }}>
                 <label className="sv-label" style={{ color:"var(--red)" }}>Confirm Password</label>
-                <input type="password" className="sv-input" style={{ borderColor:"rgba(255,68,102,0.2)" }} placeholder="Your current password" value={delPw} onChange={e=>setDelPw(e.target.value)} />
+                <input type="password" className="sv-input" style={{ borderColor:"rgba(248,113,113,0.25)" }} placeholder="Your current password" value={delPw} onChange={e=>setDelPw(e.target.value)} />
               </div>
               <div style={{ marginBottom:18 }}>
                 <label className="sv-label" style={{ color:"var(--red)" }}>Type DELETE to confirm</label>
-                <input className="sv-input" style={{ borderColor:"rgba(255,68,102,0.2)",letterSpacing:"0.1em" }} placeholder="DELETE" value={delTyped} onChange={e=>setDelTyped(e.target.value.toUpperCase())} />
+                <input className="sv-input" style={{ borderColor:"rgba(248,113,113,0.25)",letterSpacing:"0.1em" }} placeholder="DELETE" value={delTyped} onChange={e=>setDelTyped(e.target.value.toUpperCase())} />
               </div>
               <div style={{ display:"flex",gap:8 }}>
                 <button className="sv-btn sv-btn-danger sv-btn-lg sv-btn-full" style={{ opacity:delTyped==="DELETE"&&delPw?1:0.35,transition:"opacity 0.2s" }} onClick={deleteAccount}>Permanently Delete Account</button>
