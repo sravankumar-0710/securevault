@@ -19,7 +19,7 @@ from security.user_registry import UserRegistry
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 sock = Sock(app)
-CORS(app, resources={r"/*": {"origins": ["http://localhost:5173", "http://localhost:5174", "https://localhost:5173", "https://localhost:5174"]}})
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 BASE_USERS_DIR = os.path.join(os.path.dirname(__file__), "users")
 _registry = UserRegistry(BASE_USERS_DIR)
@@ -1163,16 +1163,5 @@ def airgesture_login_ws(ws):
 # ─────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
-    import os
-
-    cert = os.path.join(os.path.dirname(__file__), "localhost+1.pem")
-    key  = os.path.join(os.path.dirname(__file__), "localhost+1-key.pem")
-
-    if os.path.exists(cert) and os.path.exists(key):
-        print("🔒 Starting with HTTPS (SSL enabled)")
-        app.run(debug=True, ssl_context=(cert, key), host="127.0.0.1", port=5000)
-    else:
-        print("⚠  SSL certs not found — starting with HTTP")
-        print("   Run: mkcert localhost 127.0.0.1")
-        print("   inside the backend folder to enable HTTPS")
-        app.run(debug=True, host="127.0.0.1", port=5000)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(debug=False, host="0.0.0.0", port=port)
