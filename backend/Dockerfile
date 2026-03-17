@@ -14,12 +14,3 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 CMD gunicorn app:app --bind 0.0.0.0:$PORT
-```
-
-**Step 5** — Save the file (Ctrl+S)
-
-**Step 6** — Open your terminal in the backend folder and run:
-```
-git add .
-git commit -m "fix: add Dockerfile with system dependencies"
-git push
