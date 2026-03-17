@@ -19,7 +19,7 @@ from security.user_registry import UserRegistry
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 sock = Sock(app)
-CORS(app, resources={r"/*": {"origins": "*"}})
+CORS(app, origins=["https://securevault-mfa.vercel.app"])
 
 BASE_USERS_DIR = os.path.join(os.path.dirname(__file__), "users")
 _registry = UserRegistry(BASE_USERS_DIR)
