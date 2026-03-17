@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { AirGestureSetup } from "../components/AirGestureCapture";
 import { ImagePointsSetup } from "../components/ImagePointsAuth";
 
-const API = "https://securevault-production.up.railway.app";
+const API = "https://127.0.0.1:5000";
 
 const METHODS = {
   password:    { icon: "🔑", label: "Password",      desc: "Master password and vault encryption key." },
@@ -52,10 +52,11 @@ export default function Settings({ token, onBack }) {
   const authH = useCallback(() => ({ Authorization: token }), [token]);
 
   useEffect(() => {
+    if (!token) return;
     fetch(`${API}/settings/methods`, { headers: authH() })
       .then(r => r.json()).then(d => setEnabled(d.enabled || []))
       .catch(() => addToast("Could not load settings", "error"));
-  }, []);
+  }, [token]);
 
   const addToast = (msg, type = "success") => {
     const id = ++_tid;
