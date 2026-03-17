@@ -18,7 +18,7 @@ cryptography==44.0.3
 mediapipe==0.10.21
 
 # Image processing (used by MediaPipe)
-opencv-python==4.10.0.84
+opencv-python-headless==4.13.0.92
 
 # Array math (used by MediaPipe + gesture processing)
 numpy==1.26.4
