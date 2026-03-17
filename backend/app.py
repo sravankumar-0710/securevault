@@ -19,6 +19,8 @@ from security.user_registry import UserRegistry
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 sock = Sock(app)
+from werkzeug.middleware.proxy_fix import ProxyFix
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 CORS(app, origins=["https://securevault-mfa.vercel.app"])
 
 BASE_USERS_DIR = os.path.join(os.path.dirname(__file__), "users")
