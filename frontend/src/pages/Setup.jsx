@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { AirGestureSetup  } from "../components/AirGestureCapture";
 import { ImagePointsSetup } from "../components/ImagePointsAuth";
 
-const API = "https://127.0.0.1:5000";
+const API = "https://securevault-production.up.railway.app";
 
 const ALL_METHODS = [
   { id:"password",    icon:"🔑", label:"Password",  disabled:true },

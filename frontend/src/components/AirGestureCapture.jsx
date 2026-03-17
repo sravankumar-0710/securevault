@@ -1,7 +1,7 @@
 import React from "react";
 import { useState, useRef, useEffect, useCallback } from "react";
 
-const WS_BASE = "wss://127.0.0.1:5000";
+const WS_BASE = "wss://securevault-production.up.railway.app";
 
 const TRACKING_OPTIONS = [
   { id: "one_hand",  label: "One Hand",       icon: "✋" },

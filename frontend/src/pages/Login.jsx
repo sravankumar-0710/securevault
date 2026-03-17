@@ -2,7 +2,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { AirGestureLogin  } from "../components/AirGestureCapture";
 import { ImagePointsLogin } from "../components/ImagePointsAuth";
 
-const API = "https://127.0.0.1:5000";
+const API = "https://securevault-production.up.railway.app";
 
 export default function Login({ onSuccess, onGoSetup, logoutMessage }) {
   const [username,  setUsername]  = useState("");

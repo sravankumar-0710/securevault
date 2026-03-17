@@ -1,7 +1,7 @@
 import React from "react";
 import { useState, useRef, useEffect } from "react";
 
-const API = "https://127.0.0.1:5000";
+const API = "https://securevault-production.up.railway.app";
 
 const s = {
   wrap: {
