@@ -19,9 +19,7 @@ from security.user_registry import UserRegistry
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 sock = Sock(app)
-from werkzeug.middleware.proxy_fix import ProxyFix
-app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
-CORS(app, origins=["https://securevault-mfa.vercel.app"])
+CORS(app, resources={r"/*": {"origins": ["http://localhost:5173", "http://localhost:5174", "https://localhost:5173", "https://localhost:5174"]}})
 
 BASE_USERS_DIR = os.path.join(os.path.dirname(__file__), "users")
 _registry = UserRegistry(BASE_USERS_DIR)
@@ -1164,6 +1162,127 @@ def airgesture_login_ws(ws):
 
 # ─────────────────────────────────────────────────────────────
 
+@app.route("/airgesture/setup", methods=["POST"])
+def airgesture_setup_http():
+    """
+    HTTP alternative to the WebSocket setup endpoint.
+    Client sends all frames for all samples at once.
+    Body: { session_token, username, tracking, samples: [[{landmarks},...], ...] }
+    """
+    token   = request.headers.get("Authorization")
+    session = SessionManager.validate(token)
+    if not session:
+        return jsonify({"error": "Invalid session"}), 401
+
+    data     = request.json
+    samples  = data.get("samples", [])
+    tracking = data.get("tracking", ["one_hand"])
+    username = session["username"]
+
+    if len(samples) < 2:
+        return jsonify({"error": "Need at least 2 samples"}), 400
+
+    user_dir = _registry.get_user_dir(username) or os.path.join(BASE_USERS_DIR, username)
+    meta_dir = os.path.join(user_dir, "meta")
+    os.makedirs(meta_dir, exist_ok=True)
+
+    master_key = decrypt_with_key(session["session_key"], session["encrypted_master"])
+
+    ag           = AirGestureAuth(meta_dir)
+    unlock_token = ag.setup(samples, tracking)
+
+    _write_master_key(meta_dir, "airgesture", unlock_token, master_key)
+
+    policy_manager = PolicyManager(user_dir)
+    try:
+        policy = policy_manager.load_policy(master_key)
+        if "airgesture" not in policy["enabled"]:
+            policy["enabled"].append("airgesture")
+        policy["airgesture_tracking"] = tracking
+        open(policy_manager.policy_file, "wb").write(
+            encrypt_with_key(master_key, json.dumps(policy).encode())
+        )
+    except Exception as e:
+        print("Policy update error:", e)
+
+    public_meta_path = os.path.join(meta_dir, "public_meta.json")
+    try:
+        pub = json.load(open(public_meta_path)) if os.path.exists(public_meta_path) else {}
+    except Exception:
+        pub = {}
+    pub["airgesture_tracking"] = tracking
+    json.dump(pub, open(public_meta_path, "w"))
+
+    log_event(username, "AIRGESTURE_SETUP", "SUCCESS")
+    return jsonify({"status": "saved"})
+
+
+@app.route("/airgesture/frames", methods=["POST"])
+def airgesture_extract_frames():
+    """
+    Batch landmark extraction — client sends multiple frames, server returns landmarks.
+    Body: { frames: [base64_jpeg, ...], tracking: [...] }
+    Used during recording so client can send batches and get landmarks back.
+    """
+    token   = request.headers.get("Authorization")
+    session = SessionManager.validate(token)
+    if not session:
+        return jsonify({"error": "Invalid session"}), 401
+
+    data     = request.json
+    frames   = data.get("frames", [])
+    tracking = data.get("tracking", ["one_hand"])
+
+    extractor  = _air_extractor
+    landmarks  = []
+    annotated  = None
+
+    for frame_b64 in frames:
+        result = extractor.extract_landmarks(frame_b64, tracking)
+        if result["landmarks"]:
+            landmarks.append(result["landmarks"])
+        annotated = result["annotated"]  # return last annotated frame
+
+    return jsonify({"landmarks": landmarks, "annotated": annotated})
+
+
+@app.route("/airgesture/verify", methods=["POST"])
+def airgesture_verify_http():
+    """
+    HTTP alternative to WebSocket login verification.
+    Body: { username, tracking, frames: [{landmarks},...] }
+    """
+    data     = request.json
+    username = data.get("username")
+    tracking = data.get("tracking", ["one_hand"])
+    frames   = data.get("frames", [])
+
+    user_dir = _registry.get_user_dir(username) or os.path.join(BASE_USERS_DIR, username)
+    meta_dir = os.path.join(user_dir, "meta")
+
+    if not os.path.exists(meta_dir):
+        return jsonify({"result": "fail", "error": "User not found"}), 404
+
+    ag = AirGestureAuth(meta_dir)
+    ok, result = ag.verify(frames, tracking)
+
+    if ok:
+        return jsonify({"result": "success", "unlock_token": result.hex()})
+    else:
+        return jsonify({"result": "fail", "error": result})
+
+
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(debug=False, host="0.0.0.0", port=port)
+    import os
+
+    cert = os.path.join(os.path.dirname(__file__), "localhost+1.pem")
+    key  = os.path.join(os.path.dirname(__file__), "localhost+1-key.pem")
+
+    if os.path.exists(cert) and os.path.exists(key):
+        print("🔒 Starting with HTTPS (SSL enabled)")
+        app.run(debug=True, ssl_context=(cert, key), host="127.0.0.1", port=5000)
+    else:
+        print("⚠  SSL certs not found — starting with HTTP")
+        print("   Run: mkcert localhost 127.0.0.1")
+        print("   inside the backend folder to enable HTTPS")
+        app.run(debug=True, host="127.0.0.1", port=5000)
