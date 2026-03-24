@@ -19,7 +19,27 @@ from security.user_registry import UserRegistry
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 sock = Sock(app)
-CORS(app, resources={r"/*": {"origins": ["http://localhost:5173", "http://localhost:5174", "https://localhost:5173", "https://localhost:5174","https://securevault-mfa.vercel.app" ]}})
+
+ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "https://localhost:5173",
+    "https://localhost:5174",
+    "https://securevault-mfa.vercel.app",
+]
+
+CORS(app, resources={r"/*": {"origins": ALLOWED_ORIGINS}})
+
+# Ensure CORS headers are present on WebSocket upgrade responses too
+@app.after_request
+def add_cors_headers(response):
+    origin = request.headers.get("Origin", "")
+    if origin in ALLOWED_ORIGINS:
+        response.headers["Access-Control-Allow-Origin"]      = origin
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+        response.headers["Access-Control-Allow-Headers"]     = "Authorization, Content-Type"
+        response.headers["Access-Control-Allow-Methods"]     = "GET, POST, PUT, DELETE, OPTIONS"
+    return response
 
 BASE_USERS_DIR = os.path.join(os.path.dirname(__file__), "users")
 _registry = UserRegistry(BASE_USERS_DIR)
@@ -493,7 +513,8 @@ def settings_methods():
     if not session:
         return jsonify({"error": "Invalid session"}), 401
 
-    meta_dir = os.path.join(BASE_USERS_DIR, session["username"], "meta")
+    user_dir = _registry.get_user_dir(session["username"]) or os.path.join(BASE_USERS_DIR, session["username"])
+    meta_dir = os.path.join(user_dir, "meta")
     methods = [m for m in ["password","keystroke","mouse","airgesture","imagepoints"]
                if _method_enabled(meta_dir, m)]
     return jsonify({"enabled": methods})
@@ -546,7 +567,7 @@ def settings_reenroll():
             try:
                 with open(fpath) as _f:
                     _d = _json.load(_f)
-                if "salt" in _d and "hash" in _d and "encrypted_unlock" in _d:
+                if "hash_salt" in _d and "hash" in _d and "encrypted_unlock" in _d:
                     os.remove(fpath)
                     break
             except Exception:
@@ -850,11 +871,12 @@ def change_policy():
 def list_images():
     static_dir = os.path.join(os.path.dirname(__file__), "static", "images")
     images = []
+    BACKEND_URL = os.environ.get("BACKEND_URL", "https://securevault-production.up.railway.app")
     for filename in BUILTIN_IMAGES:
         if os.path.exists(os.path.join(static_dir, filename)):
             images.append({
                 "id":  filename,
-                "url": f"https://127.0.0.1:5000/static/images/{filename}"
+                "url": f"{BACKEND_URL}/static/images/{filename}"
             })
     return jsonify({"images": images})
 
@@ -879,9 +901,10 @@ def upload_image():
     os.makedirs(save_dir, exist_ok=True)
     img_file.save(os.path.join(save_dir, image_id))
 
+    BACKEND_URL = os.environ.get("BACKEND_URL", "https://securevault-production.up.railway.app")
     return jsonify({
         "image_id": image_id,
-        "url": f"https://127.0.0.1:5000/static/images/{image_id}"
+        "url": f"{BACKEND_URL}/static/images/{image_id}"
     })
 
 
